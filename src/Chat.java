@@ -1,4 +1,4 @@
-//linoy gitest
+//linoy gitest no
 import java.util.Scanner;
 
 public class Chat {
