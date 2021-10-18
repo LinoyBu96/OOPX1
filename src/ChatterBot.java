@@ -12,36 +12,60 @@ import java.util.*;
  */
 class ChatterBot {
     static final String REQUEST_PREFIX = "say ";
+    static final String REQUESTED_PHRASE_PLACEHOLDER = "<phrase>";
+    static final String ILLEGAL_REQUEST_PLACEHOLDER = "<request>";
+
     String name;
     Random rand = new Random();
     String[] repliesToIllegalRequest;
-
-    ChatterBot(String name, String[] repliesToIllegalRequest) {
-        this.name = name;
-        this.repliesToIllegalRequest = new String[repliesToIllegalRequest.length];
-        for(int i = 0 ; i < repliesToIllegalRequest.length ; i = i+1) {
-            this.repliesToIllegalRequest[i] = repliesToIllegalRequest[i];
-        }
-    }
+    String[] repliesToLegalRequest;
 
     String getName() {
         return name;
     }
 
-    String replyTo(String statement) {
-        if(statement.startsWith(REQUEST_PREFIX)) {
-            //we don’t repeat the request prefix, so delete it from the reply
-            return statement.replaceFirst(REQUEST_PREFIX, "");
+    ChatterBot(String name,
+               String[] repliesToLegalRequest,
+               String[] repliesToIllegalRequest) {
+        this.name = name;
+        this.repliesToIllegalRequest = new String[repliesToIllegalRequest.length];
+        for(int i = 0 ; i < repliesToIllegalRequest.length ; i = i+1) {
+            this.repliesToIllegalRequest[i] = repliesToIllegalRequest[i];
         }
-        return respondToIllegalRequest(statement);
+
+        this.repliesToLegalRequest = new String[repliesToLegalRequest.length];
+        for(int i = 0 ; i < repliesToLegalRequest.length ; i = i+1) {
+            this.repliesToLegalRequest[i] = repliesToLegalRequest[i];
+        }
+    }
+
+
+    String replacePlaceholderInARandomPattern(String[] possibleReplies,
+                                              String placeholder,
+                                              String statement) {
+        int randomIndex = rand.nextInt(possibleReplies.length);
+        String responsePattern = possibleReplies[randomIndex];
+        return responsePattern.replaceAll(placeholder, statement);
+    }
+
+    String respondToLegalRequest(String statement) {
+        //we don’t repeat the request prefix, so delete it from the reply
+        String phrase = statement.replaceFirst(REQUEST_PREFIX, "");
+        return replacePlaceholderInARandomPattern(repliesToLegalRequest,
+                REQUESTED_PHRASE_PLACEHOLDER,
+                phrase);
     }
 
     String respondToIllegalRequest(String statement) {
-        int randomIndex = rand.nextInt(repliesToIllegalRequest.length);
-        String reply = repliesToIllegalRequest[randomIndex];
-        if(rand.nextBoolean()) {
-            reply = reply + statement;
+        return replacePlaceholderInARandomPattern(repliesToIllegalRequest,
+                ILLEGAL_REQUEST_PLACEHOLDER,
+                statement);
+    }
+
+    String replyTo(String statement) {
+        if(statement.startsWith(REQUEST_PREFIX)) {
+            return respondToLegalRequest(statement);
         }
-        return reply;
+        return respondToIllegalRequest(statement);
     }
 }
