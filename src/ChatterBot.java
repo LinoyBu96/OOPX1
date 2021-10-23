@@ -11,18 +11,27 @@ import java.util.*;
  * @author Dan Nirel
  */
 class ChatterBot {
+
+    //************************************************//
+    //***************** constants ********************//
+    //************************************************//
+
     static final String REQUEST_PREFIX = "say ";
     static final String REQUESTED_PHRASE_PLACEHOLDER = "<phrase>";
     static final String ILLEGAL_REQUEST_PLACEHOLDER = "<request>";
+
+    //************************************************//
+    //****************** members *********************//
+    //************************************************//
 
     String name;
     Random rand = new Random();
     String[] repliesToIllegalRequest;
     String[] repliesToLegalRequest;
 
-    String getName() {
-        return name;
-    }
+    //************************************************//
+    //**************** constructor *******************//
+    //************************************************//
 
     ChatterBot(String name,
                String[] repliesToLegalRequest,
@@ -39,6 +48,17 @@ class ChatterBot {
         }
     }
 
+    //************************************************//
+    //******************** getters *******************//
+    //************************************************//
+
+    String getName() {
+        return name;
+    }
+
+    //************************************************//
+    //******************* methods ********************//
+    //************************************************//
 
     String replacePlaceholderInARandomPattern(String[] possibleReplies,
                                               String placeholder,
